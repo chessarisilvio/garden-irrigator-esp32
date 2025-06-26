@@ -118,22 +118,29 @@ We will be coding in C++ using the arduino IDE
 ## How your garden irrigator works:
    Your ESP32 is now a smart, connected graden assistant with a noth automatic and manual control!
     1. Automatic monitoring (every minute)
+
        -it continusly reads data from your soil moisture, light, and DHT (temperature/humidity) sensors.
        -it autoatically activates the pump for 1 minute if the soil is drym it's nighttime and the temperature is not 
        excessively high (to prevent evaporation).
        -it prints all the sensor readings and its decisions to the serial monitor for debugging.
+
     2. Hourly telegram reports:
+
        -every hour it sends a detailed status update to your telegram bot. This message includes:
          1. wheter it irrigated in the past hour (why / why not)
          2. current temperature, humidity, soil moisture and light levels.
          3. It also sends instant notifications for system startup, sensor errors, or when manual watering is initiated or   
             stopped.
+
     3. Manual control via Telegram:
+
         -send " /start " or " /menu " to your bot in telegram. It will reply with an interactive keyboard at the bottom of   
          your chat.
         -"start manual watering": Tap this to activate the pump for a 30-second burst, regardless of sensor readings.
         -"stop watering": Tap this for an instant, real time report of all sensor and the current watering status.
+        
     4. Intelligent Pump Management:
+
         -The pump will run only for the specified duration (1 minute for auto, 30 seconds for manual).
         -it wont start a new watering cycle if the pump is alredy active, preventing accindetal overwatering or conflicts.
         -If the wi-fi connection is lost, it will attemp to reconnect to ensure telegram communication can resume.
