@@ -58,16 +58,18 @@ We will be coding in C++ using the arduino IDE
 
 3. Install Usb Drivers:
    Your computer needs drivers to communicate with the ESP32's USB-to-serial chip. Its best to install them all to be safe, 
-   as different 
+   as different (if you use windows click window + x and go to device management and find port com, usually it will be with a yellow triangle with a ! in between).
    esp32 boards use different chips:
-   - CP210X DRIVER: https://www.silabs.com/documents/public/software/CP210x_Universal_Windows_Driver.zip
-   - CH340 DRIVER: https://sparks.gogo.co.nz/assets/site/downloads/CH34x_Install_Windows_v3_4.zip
+   - CP210X DRIVER: https://www.silabs.com/documents/public/software/CP210x_Universal_Windows_Driver.zip (this personally    
+     worked for my esp32)
+   - CH340 DRIVER: https://sparks.gogo.co.nz/assets/_site_/downloads/CH340_WINDOWS.zip
    - FTDI DRIVER: https://ftdichip.com/drivers/vcp-drivers/ (Find the correct installer for your OS).
 
 4. Select the correct COM port:
    -plug your ESP32 directly into a USB on your computer (avoid USB hubs, which can sometimes cause confusion to your pc).
    -in the arduino IDE, go to Tools > Port and select the COM port that corresponds to your ESP32. it should apperars as 
    "COM X (ESP32 dev module)" or similar, to identify iy better I also suggest to disconnect any unwanted usb device.
+   then when you are there you should select ESP32 Dev Module.
 
 5. Required Libraries for the code:
    You will need two additional libraries for telegram communication. Install them via the Arduino IDE Library Manager:
@@ -76,6 +78,9 @@ We will be coding in C++ using the arduino IDE
        - Search for "UniversalTelegram" and install the latest version.
     2. ArduinoJson. (This is a dependency for UniversalTelegramBot)
        - In the same "Library Manager", search for "ArduinoJson" and install the latest stable version.
+    3. DHT sensor library:
+       - install the DHT sensor library (the one for the temperature/humidity sensors DHT11, DHT22, etc.) 
+
 
 6. Telegram bot setup:
 
@@ -91,8 +96,23 @@ We will be coding in C++ using the arduino IDE
        sending it any message (example "hi")
     2. Open your web browser and go to this URL, replacing YOUR_BOT_TOKEN with the actual token you have receveied from 
        botfather: https://api.telegram.org/botYOUR_BOT_TOKEN/getUpdates
-    3. In the JSON output, look for "chat":["id":...]. The number nect to "id": is your CHAT_ID. This can be positive number 
+    3. In the JSON output, look for "chat":["id":1234567890]. The number nect to "id": is your CHAT_ID. This can be positive 
+       number 
        on negative number, copy that number.
+    4. Go back to @BotFather.
+       Type /mybots, select your bot.
+       Click Bot Settings > Group Privacy > Turn off group privacy. This will allow the bot to read all messages in the 
+       group.
+    5.Check the Serial Monitor in Arduino IDE:
+       -Upload the code to your ESP32/ESP8266 board.
+       -Open the Serial Monitor in Arduino IDE (the magnifying glass icon in the top right).
+       -Make sure the baud rate is set to 115200.
+       -Look for messages like:
+                         "Connecting to Wi-Fi: YOUR_WIFI_SSID"
+                         "Connected to Wi-Fi!" or "Failed to connect to Wi-Fi."
+                         "IP Address: XXX.XXX.XXX.XXX"
+                         "Autonomous Garden Irrigation System is ready!"
+                         Any errors related to Telegram or sensors.
 
 7. Prepare the code: 
    Before uploading, you must configure the code with your specific wi-fi and telegram details.
@@ -138,7 +158,7 @@ We will be coding in C++ using the arduino IDE
          your chat.
         -"start manual watering": Tap this to activate the pump for a 30-second burst, regardless of sensor readings.
         -"stop watering": Tap this for an instant, real time report of all sensor and the current watering status.
-        
+
     4. Intelligent Pump Management:
 
         -The pump will run only for the specified duration (1 minute for auto, 30 seconds for manual).
